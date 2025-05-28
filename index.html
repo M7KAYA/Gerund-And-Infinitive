@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Gerund And Infinitive</title>
+    <style>
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #3498db 0%, #6dd5fa 100%);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        margin: 0;
+      }
+      .container {
+        width: 420px;
+        background: #ffffff;
+        padding: 30px 25px;
+        border-radius: 16px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+        text-align: center;
+      }
+      #question-text {
+        font-size: 22px;
+        font-weight: 700;
+        margin-bottom: 25px;
+        color: #333;
+        padding: 14px 20px;
+        background-color: #e3f2fd;
+        border-radius: 12px;
+        box-shadow: 0 2px 8px rgba(33, 150, 243, 0.15);
+        display: inline-block;
+        max-width: 100%;
+        line-height: 1.4;
+        user-select: none;
+      }
+      .btn-grid {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin-top: 15px;
+      }
+      button {
+        padding: 12px;
+        font-size: 16px;
+        border: none;
+        border-radius: 10px;
+        cursor: pointer;
+        background-color: #3498db;
+        color: white;
+        transition: background-color 0.3s ease, transform 0.1s ease;
+      }
+      button:hover {
+        background-color: #2980b9;
+        transform: scale(1.02);
+      }
+      button:disabled {
+        background-color: #bdc3c7;
+        cursor: not-allowed;
+      }
+      .correct {
+        background-color: #2ecc71 !important;
+      }
+      .wrong {
+        background-color: #e74c3c !important;
+      }
+      .answer-btn:last-of-type {
+        margin-bottom: 10px;
+      }
+      #question-number {
+        margin-bottom: 15px;
+        font-size: 16px;
+        color: #666;
+        font-weight: 500;
+      }
+      #result-box {
+        margin-top: 20px;
+        font-size: 20px;
+        font-weight: bold;
+        color: #2c3e50;
+        padding: 12px;
+        background-color: #dfefff;
+        border-radius: 10px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+      }
+      .hide {
+        display: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h2 id="quiz-title">Gerund And Infinitive</h2>
+
+      <div id="start-box">
+        <button id="start-btn">Start</button>
+      </div>
+      <div id="quiz-box" class="hide">
+        <div id="question-number"></div>
+        <div id="question-text"></div>
+        <div id="answer-buttons" class="btn-grid"></div>
+        <button id="next-btn" disabled>Next</button>
+      </div>
+      <div id="result-box" class="hide">
+        <h3>Your Score</h3>
+        <p id="score-text"></p>
+        <button id="try-again-btn">Try Again</button>
+      </div>
+    </div>
+
+    <script>
+      const allQuestions = [
+        {
+          question: "Which sentence uses a gerund as the subject?",
+          options: [
+            "She loves swimming.",
+            "Swimming is good exercise.",
+            "He wants to swim.",
+            "They are swimming now.",
+          ],
+          correctIndex: 1,
+        },
+        {
+          question: "Which verb is NOT followed by a gerund?",
+          options: ["avoid", "enjoy", "decide", "deny"],
+          correctIndex: 2,
+        },
+        {
+          question: "She admitted ___ the money.",
+          options: ["to steal", "stealing", "steal", "stolen"],
+          correctIndex: 1,
+        },
+        {
+          question: "I can't help ___ when I see sad movies.",
+          options: ["cry", "to cry", "crying", "cried"],
+          correctIndex: 2,
+        },
+        {
+          question: "He is considering ___ a new job.",
+          options: ["accept", "to accept", "accepting", "accepted"],
+          correctIndex: 2,
+        },
+        {
+          question: "They delayed ___ the decision.",
+          options: ["make", "to make", "making", "made"],
+          correctIndex: 2,
+        },
+        {
+          question: "She enjoys ___ novels in her free time.",
+          options: ["read", "to read", "reading", "reads"],
+          correctIndex: 2,
+        },
+        {
+          question: "He gave up ___ last year.",
+          options: ["smoke", "to smoke", "smoking", "smoked"],
+          correctIndex: 2,
+        },
+        {
+          question: "We miss ___ with our old friends.",
+          options: ["play", "to play", "playing", "played"],
+          correctIndex: 2,
+        },
+        {
+          question: "She suggested ___ to the cinema.",
+          options: ["go", "to go", "going", "gone"],
+          correctIndex: 2,
+        },
+        {
+          question: "He is busy ___ for his exams.",
+          options: ["study", "studying", "to study", "studied"],
+          correctIndex: 1,
+        },
+        {
+          question: "It's no use ___ about the past.",
+          options: ["worry", "to worry", "worrying", "worried"],
+          correctIndex: 2,
+        },
+        {
+          question: "She is afraid of ___ spiders.",
+          options: ["see", "seeing", "to see", "seen"],
+          correctIndex: 1,
+        },
+        {
+          question: "What about ___ a break?",
+          options: ["take", "to take", "taking", "took"],
+          correctIndex: 2,
+        },
+        {
+          question: "He is proud of ___ the competition.",
+          options: ["win", "winning", "to win", "won"],
+          correctIndex: 1,
+        },
+        {
+          question: "She is tired of ___ the same thing every day.",
+          options: ["do", "doing", "to do", "done"],
+          correctIndex: 1,
+        },
+        {
+          question: "They are excited about ___ to Europe.",
+          options: ["travel", "traveling", "to travel", "traveled"],
+          correctIndex: 1,
+        },
+        {
+          question: "He apologized for ___ late.",
+          options: ["be", "being", "to be", "been"],
+          correctIndex: 1,
+        },
+        {
+          question: "She is used to ___ early.",
+          options: ["wake", "waking", "to wake", "woken"],
+          correctIndex: 1,
+        },
+        {
+          question: "They succeeded in ___ the project on time.",
+          options: ["finish", "finishing", "to finish", "finished"],
+          correctIndex: 1,
+        },
+        {
+          question: "She promised ___ him tomorrow.",
+          options: ["call", "to call", "calling", "called"],
+          correctIndex: 1,
+        },
+        {
+          question: "He was the first ___ the finish line.",
+          options: ["reach", "to reach", "reaching", "reached"],
+          correctIndex: 1,
+        },
+        {
+          question: "They decided ___ a new car.",
+          options: ["buy", "to buy", "buying", "bought"],
+          correctIndex: 1,
+        },
+        {
+          question: "She hopes ___ a doctor one day.",
+          options: ["become", "to become", "becoming", "became"],
+          correctIndex: 1,
+        },
+        {
+          question: "He forgot ___ the door before leaving.",
+          options: ["lock", "to lock", "locking", "locked"],
+          correctIndex: 1,
+        },
+        {
+          question:
+            "He completely forgot ___ the door, even though he did it 10 minutes ago.",
+          options: ["lock", "to lock", "locking", "locked"],
+          correctIndex: 2,
+        },
+        {
+          question: "I regret ___ you that your application was rejected.",
+          options: ["inform", "to inform", "informing", "informed"],
+          correctIndex: 1,
+        },
+        {
+          question: "She agreed ___ him with the project.",
+          options: ["help", "to help", "helping", "helped"],
+          correctIndex: 1,
+        },
+        {
+          question: "He learned ___ when he was five.",
+          options: ["swim", "to swim", "swimming", "swam"],
+          correctIndex: 1,
+        },
+        {
+          question: "They want ___ a new house.",
+          options: ["buy", "to buy", "buying", "bought"],
+          correctIndex: 1,
+        },
+        {
+          question: "She needs ___ her homework.",
+          options: ["finish", "to finish", "finishing", "finished"],
+          correctIndex: 1,
+        },
+        {
+          question: "I remember ___ the keys on the table.",
+          options: ["put", "to put", "putting", "puts"],
+          correctIndex: 2,
+        },
+        {
+          question: "Remember ___ the keys before leaving.",
+          options: ["take", "to take", "taking", "took"],
+          correctIndex: 1,
+        },
+        {
+          question: "She stopped ___ when she got pregnant.",
+          options: ["smoke", "to smoke", "smoking", "smoked"],
+          correctIndex: 2,
+        },
+        {
+          question: "He stopped ___ a break.",
+          options: ["take", "to take", "taking", "took"],
+          correctIndex: 1,
+        },
+        {
+          question: "I regret ___ that.",
+          options: ["say", "to say", "saying", "said"],
+          correctIndex: 2,
+        },
+        {
+          question: "We regret ___ you that the flight is canceled.",
+          options: ["inform", "to inform", "informing", "informed"],
+          correctIndex: 1,
+        },
+        {
+          question: "The windows need ___.",
+          options: ["clean", "to clean", "cleaning", "cleaned"],
+          correctIndex: 2,
+        },
+        {
+          question: "She needs ___ the windows.",
+          options: ["clean", "to clean", "cleaning", "cleaned"],
+          correctIndex: 1,
+        },
+        {
+          question: "He is used to ___ late.",
+          options: ["work", "to work", "working", "worked"],
+          correctIndex: 2,
+        },
+        {
+          question: "He used to ___ late.",
+          options: ["work", "to work", "working", "worked"],
+          correctIndex: 0,
+        },
+        {
+          question: "A gerund can function as the subject of a sentence.",
+          options: ["True", "False"],
+          correctIndex: 0,
+        },
+        {
+          question: '"I enjoy to swim" is grammatically correct.',
+          options: ["True", "False"],
+          correctIndex: 1,
+        },
+        {
+          question:
+            '"He admitted stealing the money" uses the gerund correctly.',
+          options: ["True", "False"],
+          correctIndex: 0,
+        },
+        {
+          question: '"She suggested to go shopping" is correct.',
+          options: ["True", "False"],
+          correctIndex: 1,
+        },
+        {
+          question: '"It’s no use to cry" is grammatically correct.',
+          options: ["True", "False"],
+          correctIndex: 1,
+        },
+        {
+          question:
+            '"I’m looking forward to seeing you" uses the gerund correctly.',
+          options: ["True", "False"],
+          correctIndex: 0,
+        },
+        {
+          question: '"He is afraid of flying" is correct.',
+          options: ["True", "False"],
+          correctIndex: 0,
+        },
+        {
+          question: '"She stopped to smoke" means she quit smoking.',
+          options: ["True", "False"],
+          correctIndex: 1,
+        },
+        {
+          question:
+            '"I regret telling him the truth" implies the speaker feels sorry now.',
+          options: ["True", "False"],
+          correctIndex: 0,
+        },
+        {
+          question: '"He needs cleaning his room" is correct.',
+          options: ["True", "False"],
+          correctIndex: 1,
+        },
+        {
+          question: '"He needs to clean his room." is correct.',
+          options: ["True", "False"],
+          correctIndex: 0,
+        },
+        {
+          question: '"She used to smoke" means she still smokes.',
+          options: ["True", "False"],
+          correctIndex: 1,
+        },
+        {
+          question:
+            '"He is used to working late" means he is used to it by now.',
+          options: ["True", "False"],
+          correctIndex: 0,
+        },
+        {
+          question: '"I remember to lock the door" means I didn’t forget.',
+          options: ["True", "False"],
+          correctIndex: 1,
+        },
+        {
+          question: '"They let him to leave early" is correct.',
+          options: ["True", "False"],
+          correctIndex: 1,
+        },
+        {
+          question: '"She made him clean the room" is correct.',
+          options: ["True", "False"],
+          correctIndex: 0,
+        },
+        {
+          question:
+            '"He is the first to arrive" uses the infinitive correctly.',
+          options: ["True", "False"],
+          correctIndex: 0,
+        },
+        {
+          question:
+            '"I like swimming" and "I like to swim" have the same meaning.',
+          options: ["True", "False"],
+          correctIndex: 0,
+        },
+        {
+          question: '"He denied to take the money" is correct.',
+          options: ["True", "False"],
+          correctIndex: 1,
+        },
+        {
+          question: '"She avoids to eat junk food" is correct.',
+          options: ["True", "False"],
+          correctIndex: 1,
+        },
+        {
+          question: '"He is interested in learning French" is correct.',
+          options: ["True", "False"],
+          correctIndex: 0,
+        },
+        {
+          question: "She is excited ___ traveling to Paris.",
+          options: ["about", "at", "for", "with"],
+          correctIndex: 0,
+        },
+        {
+          question: "He apologized ___ being late.",
+          options: ["for", "about", "at", "on"],
+          correctIndex: 0,
+        },
+        {
+          question: "They are interested ___ learning Spanish.",
+          options: ["in", "at", "on", "with"],
+          correctIndex: 0,
+        },
+        {
+          question: "She succeeded ___ passing the exam.",
+          options: ["at", "in", "on", "for"],
+          correctIndex: 1,
+        },
+        {
+          question: "He is afraid ___ flying.",
+          options: ["of", "at", "about", "with"],
+          correctIndex: 0,
+        },
+        {
+          question: "We’re looking forward ___ seeing you.",
+          options: ["at", "to", "for", "in"],
+          correctIndex: 1,
+        },
+        {
+          question: "She is good ___ playing tennis.",
+          options: ["at", "in", "for", "with"],
+          correctIndex: 0,
+        },
+        {
+          question: "He is tired ___ waiting.",
+          options: ["of", "at", "with", "for"],
+          correctIndex: 0,
+        },
+        {
+          question: "She is famous ___ singing pop songs.",
+          options: ["for", "at", "with", "about"],
+          correctIndex: 0,
+        },
+        {
+          question: "They insisted ___ going out.",
+          options: ["at", "for", "on", "with"],
+          correctIndex: 2,
+        },
+        {
+          question: "He is used ___ waking up early.",
+          options: ["at", "for", "to", "with"],
+          correctIndex: 2,
+        },
+        {
+          question: "She is responsible ___ organizing the event.",
+          options: ["at", "for", "with", "about"],
+          correctIndex: 1,
+        },
+        {
+          question: "They are keen ___ traveling abroad.",
+          options: ["at", "on", "for", "with"],
+          correctIndex: 1,
+        },
+        {
+          question: "He is angry ___ losing the match.",
+          options: ["on", "about", "with", "for"],
+          correctIndex: 1,
+        },
+        {
+          question: "She is proud ___ winning the competition.",
+          options: ["at", "for", "of", "with"],
+          correctIndex: 2,
+        },
+        {
+          question: "They are fed up ___ studying.",
+          options: ["at", "with", "for", "about"],
+          correctIndex: 1,
+        },
+        {
+          question: "He is worried ___ failing the test.",
+          options: ["at", "about", "for", "with"],
+          correctIndex: 1,
+        },
+        {
+          question: "She is fond ___ dancing.",
+          options: ["at", "of", "with", "for"],
+          correctIndex: 1,
+        },
+        {
+          question: "He is sick ___ listening to complaints.",
+          options: ["at", "of", "with", "for"],
+          correctIndex: 1,
+        },
+        {
+          question:
+            'True or False: The phrase "interested in" is followed by a gerund, as in "interested in writing."',
+          options: ["True", "False"],
+          correctIndex: 0,
+        },
+        {
+          question:
+            'True or False: "He is afraid of flying" uses the correct preposition ("of") with the gerund "flying."',
+          options: ["True", "False"],
+          correctIndex: 0,
+        },
+        {
+          question:
+            'True or False: The sentence "She is good at to swim" correctly uses the preposition "at" with an infinitive.',
+          options: ["True", "False"],
+          correctIndex: 1,
+        },
+        {
+          question:
+            'True or False: "They apologized for being late" follows the structure "verb + preposition + gerund."',
+          options: ["True", "False"],
+          correctIndex: 0,
+        },
+        {
+          question:
+            'True or False: "I’m looking forward to see you" is grammatically correct.',
+          options: ["True", "False"],
+          correctIndex: 1,
+        },
+        {
+          question:
+            'True or False: The preposition "on" is used correctly in "insist on going."',
+          options: ["True", "False"],
+          correctIndex: 0,
+        },
+        {
+          question:
+            'True or False: "He is tired to wait" uses the correct preposition with the gerund.',
+          options: ["True", "False"],
+          correctIndex: 1,
+        },
+        {
+          question:
+            'True or False: "What about go to the park?" follows the correct gerund structure after "about."',
+          options: ["True", "False"],
+          correctIndex: 1,
+        },
+        {
+          question:
+            'True or False: "She is used to smoke" is the correct form to express familiarity with smoking.',
+          options: ["True", "False"],
+          correctIndex: 1,
+        },
+        {
+          question:
+            'True or False: "The advantage of farming" uses the preposition "of" correctly before the gerund.',
+          options: ["True", "False"],
+          correctIndex: 0,
+        },
+        {
+          question: 'Which sentence correctly uses the infinitive with "to"?',
+          options: [
+            "She made him to clean the room.",
+            "Gagarin was the first to fly in a spaceship.",
+            "Let’s to go for a walk.",
+            "I heard him to sing a song.",
+          ],
+          correctIndex: 1,
+        },
+        {
+          question:
+            'After which phrase do we use the bare infinitive (without "to")?',
+          options: ["happy to", "would rather", "the next to", "afraid of"],
+          correctIndex: 1,
+        },
+        {
+          question: "Choose the correct sentence:",
+          options: [
+            "He let me to borrow his book.",
+            "Why not to ask for help?",
+            "You had better study now.",
+          ],
+          correctIndex: 2,
+        },
+        {
+          question: 'Which structure requires the infinitive with "to"?',
+          options: [
+            "after let",
+            "after make",
+            "after would sooner",
+            "after adjectives",
+          ],
+          correctIndex: 3,
+        },
+        {
+          question:
+            'What follows the verb hear in this sentence? "I heard Peter sing a song."',
+          options: ["to sing", "singing", "sing", "sang"],
+          correctIndex: 2,
+        },
+        {
+          question: "Which sentence is incorrect?",
+          options: [
+            "She will cook a meal.",
+            "They saw him to climb the tree.",
+            "Why not go by train?",
+            "He was the last to arrive.",
+          ],
+          correctIndex: 1,
+        },
+        {
+          question: "After make + object, we use:",
+          options: [
+            "to + infinitive",
+            "gerund",
+            "bare infinitive",
+            "past participle",
+          ],
+          correctIndex: 2,
+        },
+        {
+          question: "Which sentence follows the rule for would rather?",
+          options: [
+            "I would rather to stay home.",
+            "She would rather studying.",
+            "They would rather leave early.",
+            "We would rather to sleep.",
+          ],
+          correctIndex: 2,
+        },
+        {
+          question: "What structure is used after why not?",
+          options: [
+            "gerund",
+            "bare infinitive",
+            "to + infinitive",
+            "past tense",
+          ],
+          correctIndex: 1,
+        },
+        {
+          question:
+            'True or False: After let, we use the infinitive with "to."',
+          options: ["True", "False"],
+          correctIndex: 1,
+        },
+        {
+          question:
+            'True or False: "She made them to clean the room" is grammatically correct.',
+          options: ["True", "False"],
+          correctIndex: 1,
+        },
+        {
+          question:
+            'True or False: The infinitive with "to" is used after adjectives, as in "happy to help."',
+          options: ["True", "False"],
+          correctIndex: 0,
+        },
+        {
+          question:
+            'True or False: "Why should we to go by car?" follows the correct structure.',
+          options: ["True", "False"],
+          correctIndex: 1,
+        },
+        {
+          question:
+            "True or False: Verbs of perception (e.g., see, hear) are followed by a bare infinitive when the action is complete.",
+          options: ["True", "False"],
+          correctIndex: 0,
+        },
+      ];
+
+      let currentQuestionIndex = 0;
+      let score = 0;
+
+      function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [array[i], array[j]] = [array[j], array[i]];
+        }
+      }
+      shuffleArray(allQuestions);
+
+      const startBtn = document.getElementById("start-btn");
+      const nextBtn = document.getElementById("next-btn");
+      const tryAgainBtn = document.getElementById("try-again-btn");
+      const quizBox = document.getElementById("quiz-box");
+      const startBox = document.getElementById("start-box");
+      const questionNumberElement = document.getElementById("question-number");
+      const questionText = document.getElementById("question-text");
+      const answerButtons = document.getElementById("answer-buttons");
+      const resultBox = document.getElementById("result-box");
+      const scoreText = document.getElementById("score-text");
+
+      startBtn.addEventListener("click", startQuiz);
+      nextBtn.addEventListener("click", () => {
+        currentQuestionIndex++;
+        setNextQuestion();
+      });
+      tryAgainBtn.addEventListener("click", startQuiz);
+
+      function startQuiz() {
+        currentQuestionIndex = 0;
+        score = 0;
+        startBox.classList.add("hide");
+        resultBox.classList.add("hide");
+        quizBox.classList.remove("hide");
+        setNextQuestion();
+      }
+
+      function setNextQuestion() {
+        resetState();
+        if (currentQuestionIndex < allQuestions.length) {
+          showQuestion(allQuestions[currentQuestionIndex]);
+        } else {
+          showResult();
+        }
+      }
+
+      function showQuestion(questionObj) {
+        questionNumberElement.textContent = `Question ${
+          currentQuestionIndex + 1
+        } of ${allQuestions.length}`;
+        questionText.textContent = questionObj.question;
+
+        questionObj.options.forEach((option, index) => {
+          const button = document.createElement("button");
+          button.textContent = option;
+          button.classList.add("answer-btn");
+          button.addEventListener("click", () =>
+            selectAnswer(button, index === questionObj.correctIndex)
+          );
+          answerButtons.appendChild(button);
+        });
+      }
+
+      function resetState() {
+        nextBtn.disabled = true;
+        answerButtons.innerHTML = "";
+      }
+
+      function selectAnswer(button, isCorrect) {
+        const buttons = answerButtons.querySelectorAll("button");
+        buttons.forEach((btn) => {
+          btn.disabled = true;
+        });
+
+        if (isCorrect) {
+          button.classList.add("correct");
+          score++;
+        } else {
+          button.classList.add("wrong");
+          const correctButton =
+            buttons[allQuestions[currentQuestionIndex].correctIndex];
+          correctButton.classList.add("correct");
+        }
+
+        nextBtn.disabled = false;
+      }
+
+      function showResult() {
+        quizBox.classList.add("hide");
+        resultBox.classList.remove("hide");
+        scoreText.textContent = `${score} out of ${allQuestions.length} correct`;
+      }
+    </script>
+  </body>
+</html>
